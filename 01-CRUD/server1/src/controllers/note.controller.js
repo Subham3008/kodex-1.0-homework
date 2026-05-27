@@ -63,7 +63,49 @@ const getNotesController = async (req, res) => {
   }
 }
 
+//update controller
+const updateNoteController = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { description } = req.body
+
+    if (!description) {
+      return res.status(400).json({
+        message: "description is required."
+      })
+    }
+
+    if (description.trim().length < 10) {
+      return res.status(400).json({
+        message: "description must be 10 characters long."
+      })
+    }
+
+    const note = await noteModel.findById(id)
+
+    if (!note) {
+      return res.status(404).json({
+        message: "Note not found."
+      })
+    }
+
+    note.description = description
+    await note.save()
+
+    return res.status(200).json({
+      message: "Note updated successfully."
+    })
+
+
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal server error."
+    })
+  }
+}
+
 module.exports = {
   createNoteController,
   getNotesController,
+  updateNoteController,
 }
