@@ -1,5 +1,5 @@
 
-class APiError extends Error {
+class ApiError extends Error {
   constructor(statusCode, message) {
     super(message)
 
@@ -8,4 +8,4 @@ class APiError extends Error {
   }
 }
 
-module.exports = APiError
+module.exports = ApiError
