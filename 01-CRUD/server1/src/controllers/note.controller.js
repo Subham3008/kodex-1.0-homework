@@ -104,8 +104,36 @@ const updateNoteController = async (req, res) => {
   }
 }
 
+//delete controller
+const deleteNoteController = async (req, res) => {
+  try {
+
+    const { id } = req.params
+
+    const note = await noteModel.findByIdAndDelete(id)
+
+    if (!note) {
+      return res.status(404).json({
+        message: "Note not found."
+      })
+    }
+
+    return res.status(200).json({
+      message: "Note deleted successfully.",
+      deletedNote: note,
+    })
+
+
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal server error."
+    })
+  }
+}
+
 module.exports = {
   createNoteController,
   getNotesController,
   updateNoteController,
+  deleteNoteController,
 }

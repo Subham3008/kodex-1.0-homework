@@ -1,5 +1,5 @@
 const express = require("express")
-const { createNoteController, getNotesController, updateNoteController } = require("../controllers/note.controller")
+const { createNoteController, getNotesController, updateNoteController, deleteNoteController } = require("../controllers/note.controller")
 
 const router = express.Router()
 
@@ -10,6 +10,9 @@ router.post("/notes", createNoteController)
 router.get("/notes", getNotesController)
 
 //update note
-router.post("/notes/:id", updateNoteController)
+router.patch("/notes/:id", updateNoteController)
+
+//delete note
+router.delete("/notes/:id", deleteNoteController)
 
 module.exports = router
