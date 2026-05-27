@@ -75,9 +75,27 @@ const updateNoteController = async (req, res) => {
 
 }
 
+//delete controller
+const deleteNoteController = async (req, res) => {
+  const { id } = req.params
+
+  const note = await noteModel.findByIdAndDelete(id)
+
+  if (!note) {
+    throw new ApiError(404, "Note not found.")
+  }
+
+  return res.status(200).json({
+    message: "Note deleted successfully.",
+    deletedNote: note,
+  })
+
+}
+
 
 module.exports = {
   createNoteController,
   getNotesController,
   updateNoteController,
+  deleteNoteController
 }
