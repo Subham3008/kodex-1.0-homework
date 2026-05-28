@@ -13,12 +13,16 @@ const noteSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    user: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
   },
 )
 
-const noteModel = mongoose.model("Users", noteSchema)
+const noteModel = mongoose.model("Notes", noteSchema)
 
 module.exports = noteModel
