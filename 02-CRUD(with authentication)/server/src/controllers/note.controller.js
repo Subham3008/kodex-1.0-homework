@@ -40,8 +40,29 @@ const createNoteController = async (req, res) => {
   })
 }
 
+
+//fetched all notes
+const getNotesController = async (req, res) => {
+
+  const user = req.user
+  const notes = await noteModel.find({
+    user: req.user.email
+  })
+
+  if (!notes) {
+    throw new ApiError(404, "Notes not found")
+  }
+
+  return res.status(200).json({
+    message: "Notes fetched successfully.",
+    data: notes,
+  })
+
+}
+
 module.exports = {
   createNoteController,
+  getNotesController,
 
 }
 
