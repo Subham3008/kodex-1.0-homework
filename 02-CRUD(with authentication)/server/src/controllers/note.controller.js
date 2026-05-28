@@ -60,9 +60,62 @@ const getNotesController = async (req, res) => {
 
 }
 
+//update notes controller
+const updateNoteController = async (req, res) => {
+  const { id } = req.params
+  const { description } = req.body
+
+  // ---- Validation ----
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid note ID")
+  }
+
+  if (!description) {
+    throw new ApiError(400, "description is required.")
+  }
+
+  if (description.trim().length < 10) {
+    throw new ApiError(400, "description must be 10 characters long.")
+  }
+
+  const note = await noteModel.findById(id)
+
+  if (!note) {
+    throw new ApiError(404, "Note not found.")
+  }
+
+  note.description = description
+  await note.save()
+
+  return res.status(200).json({
+    message: "Note updated successfully."
+  })
+}
+
+
+//delete notes controller
+const deleteNoteController = async (req, res) => {
+  const { id } = req.params
+
+  const note = await noteModel.findByIdAndDelete(id)
+
+  if (!note) {
+    throw new ApiError(404, "Note not found.")
+  }
+
+  return res.status(200).json({
+    message: "Note deleted successfully.",
+    deletedNote: note,
+  })
+
+}
+
+
 module.exports = {
   createNoteController,
   getNotesController,
+  updateNoteController,
+  deleteNoteController,
 
 }
 
