@@ -157,10 +157,96 @@ const getProductByCategoryService = async ({ category }) => {
 
 }
 
+
+//--------update products by id-------->>
+const updateProductService = async (req) => {
+
+  const { id } = req.params;
+
+  const {
+    productName,
+    description,
+    price,
+    category,
+  } = req.body;
+
+  //--------check valid id-------->>
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid product id.");
+  }
+
+  //--------find product-------->>
+
+  const product = await productModel.findById(id);
+
+  if (!product) {
+    throw new ApiError(404, "Product not found.");
+  }
+
+  //--------authorization check-------->>
+
+  if (
+    product.user.toString() !== req.user.id
+  ) {
+    throw new ApiError(403, "You are not authorized to update this product.");
+  }
+
+  //--------validation-------->>
+
+  if (productName && productName.trim().length < 3) {
+    throw new ApiError(400, "Product name must be at least 3 characters long.");
+  }
+
+  if (price && Number(price) <= 0) {
+    throw new ApiError(400, "Price must be greater than 0.");
+  }
+
+  //--------multiple image upload-------->>
+
+  let uploadedImages = product.images;
+
+  if (req.files && req.files.length > 0) {
+
+    uploadedImages = [];
+
+    for (const file of req.files) {
+
+      const uploadedImage =
+        await uploadToImagekit(
+          file,
+          file.originalname,
+          "/products"
+        );
+
+      uploadedImages.push(
+        uploadedImage.url
+      );
+    }
+  }
+
+  //--------update product-------->>
+
+  product.productName = productName || product.name;
+
+  product.description = description || product.description;
+
+  product.price = price || product.price;
+
+  product.category = category || product.category;
+
+  product.images = uploadedImages;
+
+  await product.save();
+
+  return product;
+};
+
 module.exports = {
   createProductService,
   getProductService,
   deleteProductService,
   getSingleProductService,
   getProductByCategoryService,
+  updateProductService,
 }

@@ -1,6 +1,6 @@
 const express = require("express")
 const verifyJwt = require("../middlewares/auth.middleware")
-const { createProductController, getAllProductsController, deleteProductController, getSingleProductController, getProductByCategoryController } = require("../controllers/product.controller")
+const { createProductController, getAllProductsController, deleteProductController, getSingleProductController, getProductByCategoryController, updateProductController } = require("../controllers/product.controller")
 const upload = require("../middlewares/multer.middleware")
 
 
@@ -45,11 +45,22 @@ router.get("/:id", getSingleProductController)
 
 
 /**
- * @route GET /api/products?category=electronics
+ * @route GET /api/products/filter?category=cloths
  * @description get product by category need product category from req.query
  * @access Public
  */
 //--------get products by category----------->>
-router.get("/category/filter", getProductByCategoryController)
+router.get("/filter", getProductByCategoryController)
+
+/**
+ * @route PUT /api/products/:id
+ * @description update product need product._id from req.params
+ * @access Private
+ */
+//--------update product by _id----------->>
+router.put("/:id",
+  verifyJwt,
+  upload.array("images", 5),
+  updateProductController)
 
 module.exports = router
