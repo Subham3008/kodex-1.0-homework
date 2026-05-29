@@ -1,5 +1,5 @@
 const productModel = require("../models/product.model");
-const { createProductService, getProductService, deleteProductService, getSingleProductService } = require("../services/product.service");
+const { createProductService, getProductService, deleteProductService, getSingleProductService, getProductByCategoryService } = require("../services/product.service");
 const ApiError = require("../utils/apiError");
 
 //---------------create product controller----------->>
@@ -36,9 +36,8 @@ const deleteProductController = async (req, res) => {
   });
 }
 
-//-------get single product-------->>
+//-------get single product controller-------->>
 const getSingleProductController = async (req, res) => {
-
   const product = await getSingleProductService(req.params)
 
   return res.status(200).json({
@@ -49,9 +48,23 @@ const getSingleProductController = async (req, res) => {
 
 }
 
+//--------get product by category controller-------->>
+const getProductByCategoryController = async (req, res) => {
+
+  const products = await getProductByCategoryService(req.query)
+
+  return res.status(200).json({
+    success: true,
+    message: "Category products fetched successfully.",
+    totalProducts: products.length,
+    products,
+  });
+}
+
 module.exports = {
   createProductController,
   getAllProductsController,
   deleteProductController,
   getSingleProductController,
+  getProductByCategoryController
 }

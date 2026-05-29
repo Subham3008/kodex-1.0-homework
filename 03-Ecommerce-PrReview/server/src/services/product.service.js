@@ -138,9 +138,29 @@ const getSingleProductService = async ({ id }) => {
   return product
 }
 
+//-----get product by category---------->>
+const getProductByCategoryService = async ({ category }) => {
+
+  //--------check category-------->>
+  if (!category) {
+    throw new Error(400, "Category query is required.");
+  }
+
+  //--------find products by category-------->>
+  const products = await productModel.find({ category })
+
+  if (products.length === 0) {
+    throw new ApiError(404, "No products found in this category.");
+  }
+
+  return products
+
+}
+
 module.exports = {
   createProductService,
   getProductService,
   deleteProductService,
   getSingleProductService,
+  getProductByCategoryService,
 }
