@@ -1,6 +1,6 @@
 const express = require("express")
 const verifyJwt = require("../middlewares/auth.middleware")
-const { createProductController } = require("../controllers/product.controller")
+const { createProductController, getAllProductsController } = require("../controllers/product.controller")
 const upload = require("../middlewares/multer.middleware")
 
 const router = express.Router()
@@ -15,5 +15,8 @@ router.post("/create",
   verifyJwt,
   upload.array("images", 5),
   createProductController)
+
+//---------get all product------->>
+router.get("/", getAllProductsController)
 
 module.exports = router

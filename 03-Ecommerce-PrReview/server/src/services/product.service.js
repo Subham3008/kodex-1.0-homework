@@ -63,6 +63,19 @@ const createProductService = async (req) => {
   return product
 }
 
+//---getProductService-------->>
+const getProductService = async () => {
+  const products = await productModel.find()
+
+
+  if (!products || products.length === 0) {
+    throw new ApiError(404, "Products not found.");
+  }
+
+  return products
+}
+
 module.exports = {
   createProductService,
+  getProductService,
 }
