@@ -1,7 +1,9 @@
 const productModel = require("../models/product.model");
 const ApiError = require("../utils/apiError");
 const uploadToImagekit = require("../utils/imagekit.helper");
+const mongoose = require("mongoose")
 
+//-------create product--------->>
 const createProductService = async (req) => {
 
   const { productName, description, price, category } = req.body;
@@ -75,7 +77,44 @@ const getProductService = async () => {
   return products
 }
 
+//----delete product------->
+const deleteProductService = async (req) => {
+
+  const { id } = req.params
+  //--------check valid id-------->>
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(
+      400,
+      "Invalid product id."
+    );
+  }
+
+  //--------find product-------->>
+
+  const product = await productModel.findById(id);
+
+  if (!product) {
+    throw new ApiError(
+      404,
+      "Product not found."
+    );
+  }
+
+  //--------authorization check-------->>
+
+  if (product.user.toString() !== req.user.id) {
+    throw new ApiError(403, "You are not authorized to delete this product.");
+  }
+
+  //--------delete product-------->>
+
+  await product.deleteOne();
+
+}
+
 module.exports = {
   createProductService,
   getProductService,
+  deleteProductService,
 }
