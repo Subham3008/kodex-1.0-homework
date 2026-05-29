@@ -4,8 +4,8 @@ let hashed = async (hashValue) => {
   return await bcrypt.hash(hashValue, 10)
 }
 
-let comparePassword = (password, hashedPassword) => {
-  return bcrypt.compare(password, hashedPassword)
+let comparePassword = async (plainPassword, hashedPassword) => {
+  return await bcrypt.compare(plainPassword, hashedPassword)
 }
 
 module.exports = {

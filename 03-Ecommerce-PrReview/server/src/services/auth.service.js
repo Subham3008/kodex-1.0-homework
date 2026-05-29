@@ -1,10 +1,10 @@
 const userModel = require("../models/user.model")
 const ApiError = require("../utils/apiError")
-const { hashed } = require("../utils/hashed")
+const { hashed, comparePassword } = require("../utils/hashed")
 const { generateAccessToken, generateRefreshToken } = require("../utils/token")
 
+//-------register service---------->>
 const registerService = async ({ name, email, password }) => {
-
 
   //---------Validation----->>
 
@@ -64,6 +64,60 @@ const registerService = async ({ name, email, password }) => {
 
 }
 
+//----------login service----------->>
+const loginService = async ({ email, password }) => {
+
+  //---------Validation----->>
+
+  if (!password || !email) {
+    throw new ApiError(400, "All fields are required.")
+  }
+
+
+  if (password.trim().length < 6) {
+    throw new ApiError(400, "Password must be at least 6 characters long")
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new ApiError(400, "Invalid email format")
+  }
+
+  let isExisted = await userModel.findOne({ email }).select("+passwordHash")
+
+  if (!isExisted) {
+    throw new ApiError(404, "User not found.")
+  }
+
+  //------Compare password--------->>
+  let isCompared = await comparePassword(password, isExisted.passwordHash)
+
+  if (!isCompared) {
+    throw new ApiError(401, "Password not matched, unauthorized access.")
+  }
+ 
+
+  //--------generate tokens----->>
+  let accessTK = await generateAccessToken(isExisted._id)
+  let refreshTK = await generateRefreshToken(isExisted._id)
+
+  //--------generate refresh token-------->
+  let hashedRefresh = await hashed(refreshTK)
+
+  //--------save refresh token inside DB-->>
+  isExisted.refreshTokenHash = hashedRefresh
+  await isExisted.save()
+
+  return {
+    isExisted,
+    accessTK,
+    refreshTK,
+  }
+
+}
+
+
 module.exports = {
   registerService,
+  loginService,
 }

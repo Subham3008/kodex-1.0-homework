@@ -1,6 +1,6 @@
-const { registerService } = require("../services/auth.service")
+const { registerService, loginService } = require("../services/auth.service")
 
-
+//-----register controller-------------->>
 const registerController = async (req, res) => {
 
   const { newUser, accessTK, refreshTK } = await registerService(req.body)
@@ -23,7 +23,32 @@ const registerController = async (req, res) => {
 
 }
 
+//--------login controller--------------->>
+const loginController = async (req, res) => {
+
+  const { isExisted, accessTK, refreshTK } = await loginService(req.body)
+
+  //--------save token inside cookies-------->>
+  res.cookie("accessToken", accessTK, {
+    httpOnly: true,
+    maxAge: 15 * 60 * 1000,
+  })
+
+  res.cookie("refreshToken", refreshTK, {
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  })
+
+
+  return res.status(200).json({
+    message: "User loggedIn successfully.",
+    user: isExisted
+  })
+
+}
+
 
 module.exports = {
   registerController,
+  loginController,
 }
