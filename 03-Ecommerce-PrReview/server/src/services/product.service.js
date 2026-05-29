@@ -113,8 +113,34 @@ const deleteProductService = async (req) => {
 
 }
 
+//---get single product------------>>
+const getSingleProductService = async ({ id }) => {
+
+  //--------check valid mongodb id-------->>
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(
+      400,
+      "Invalid product id."
+    );
+  }
+
+  //--------find product-------->>
+
+  const product = await productModel.findById(id);
+
+  if (!product) {
+    throw new ApiError(
+      404,
+      "Product not found."
+    );
+  }
+  return product
+}
+
 module.exports = {
   createProductService,
   getProductService,
   deleteProductService,
+  getSingleProductService,
 }

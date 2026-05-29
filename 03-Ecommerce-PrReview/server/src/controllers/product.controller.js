@@ -1,5 +1,5 @@
 const productModel = require("../models/product.model");
-const { createProductService, getProductService, deleteProductService } = require("../services/product.service");
+const { createProductService, getProductService, deleteProductService, getSingleProductService } = require("../services/product.service");
 const ApiError = require("../utils/apiError");
 
 //---------------create product controller----------->>
@@ -36,8 +36,22 @@ const deleteProductController = async (req, res) => {
   });
 }
 
+//-------get single product-------->>
+const getSingleProductController = async (req, res) => {
+
+  const product = await getSingleProductService(req.params)
+
+  return res.status(200).json({
+    success: true,
+    message: "Product fetched successfully.",
+    product,
+  });
+
+}
+
 module.exports = {
   createProductController,
   getAllProductsController,
   deleteProductController,
+  getSingleProductController,
 }

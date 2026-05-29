@@ -1,6 +1,6 @@
 const express = require("express")
 const verifyJwt = require("../middlewares/auth.middleware")
-const { createProductController, getAllProductsController, deleteProductController } = require("../controllers/product.controller")
+const { createProductController, getAllProductsController, deleteProductController, getSingleProductController } = require("../controllers/product.controller")
 const upload = require("../middlewares/multer.middleware")
 
 const router = express.Router()
@@ -33,5 +33,13 @@ router.get("/", getAllProductsController)
  */
 //----------delete product---------->>
 router.delete("/delete/:id", verifyJwt, deleteProductController)
+
+/**
+ * @route GET /api/products/:id
+ * @description get single product need product id from req.params
+ * @access Public
+ */
+//-------get single product by product id
+router.get("/:id", getSingleProductController)
 
 module.exports = router
