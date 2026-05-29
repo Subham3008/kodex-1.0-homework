@@ -16,6 +16,11 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
+    passwordHash: {
+      type: String,
+      select: false,
+    },
+
 
     refreshTokenHash: {
       type: String,
