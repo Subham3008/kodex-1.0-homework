@@ -121,6 +121,8 @@ const deleteProductService = async (req) => {
   //--------delete images from database-------->>
   await product.deleteOne();
 
+  return product
+
 }
 
 //---get single product------------>>

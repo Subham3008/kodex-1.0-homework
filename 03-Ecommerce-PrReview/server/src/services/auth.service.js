@@ -117,7 +117,29 @@ const loginService = async ({ email, password }) => {
 }
 
 
+//--------google callback service--------->>
+const googleCallbackService = async (req) => {
+
+  const user = req.user;
+
+  const accessToken = await generateAccessToken(user._id)
+  const refreshToken = await generateRefreshToken(user._id)
+
+  await userModel.findByIdAndUpdate(user._id, {
+    refreshTokenHash: await hashed(refreshToken)
+  })
+
+
+  return {
+    accessToken,
+    refreshToken,
+  }
+
+}
+
+
 module.exports = {
   registerService,
   loginService,
+  googleCallbackService,
 }

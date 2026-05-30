@@ -1,5 +1,6 @@
 const productModel = require("../models/product.model");
 const { createProductService, getProductService, deleteProductService, getSingleProductService, getProductByCategoryService, updateProductService } = require("../services/product.service");
+
 const ApiError = require("../utils/apiError");
 
 //---------------create product controller----------->>
@@ -33,6 +34,7 @@ const deleteProductController = async (req, res) => {
   return res.status(200).json({
     success: true,
     message: "Product deleted successfully.",
+    deletetedProduct: deleteProduct,
   });
 }
 
@@ -52,6 +54,9 @@ const getSingleProductController = async (req, res) => {
 const getProductByCategoryController = async (req, res) => {
 
   const products = await getProductByCategoryService(req.query)
+
+  console.log("Products-->>", products);
+
 
   return res.status(200).json({
     success: true,

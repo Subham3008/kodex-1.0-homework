@@ -35,14 +35,6 @@ router.get("/", getAllProductsController)
 //----------delete product---------->>
 router.delete("/delete/:id", verifyJwt, deleteProductController)
 
-/**
- * @route GET /api/products/:id
- * @description get single product need product id from req.params
- * @access Public
- */
-//-------get single product by product id------->>
-router.get("/:id", getSingleProductController)
-
 
 /**
  * @route GET /api/products/filter?category=cloths
@@ -51,6 +43,17 @@ router.get("/:id", getSingleProductController)
  */
 //--------get products by category----------->>
 router.get("/filter", getProductByCategoryController)
+
+
+
+/**
+ * @route GET /api/products/:id
+ * @description get single product need product id from req.params
+ * @access Public
+ */
+//-------get single product by product id------->>
+router.get("/:id", getSingleProductController)
+
 
 /**
  * @route PUT /api/products/:id

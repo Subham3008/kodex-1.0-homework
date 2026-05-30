@@ -1,21 +1,35 @@
 const express = require("express")
-const { registerController, loginController } = require("../controllers/user.controller")
+const { registerController, loginController, googleCallbackController } = require("../controllers/user.controller")
+const passport = require("../config/passport")
 
-const routes = express.Router()
+const router = express.Router()
 
 /**
  * @route POST /api/auth/register
  * @description Register a new user need name, email and password in the request body
  * @access Public
  */
-routes.post("/register", registerController)
+router.post("/register", registerController)
 
 /**
  * @route POST /api/auth/login
  * @description login a new user need email and password in the request body
  * @access Public
  */
-routes.post("/login", loginController)
+router.post("/login", loginController)
 
 
-module.exports = routes
+router.get("/google", passport.authenticate("google", {
+  scope: ["profile", "email"],
+  session: false,
+}))
+
+router.get("/google/callback", passport.authenticate("google",
+  {
+    failureRedirect: "/",
+    session: false,
+  }
+), googleCallbackController)
+
+
+module.exports = router
