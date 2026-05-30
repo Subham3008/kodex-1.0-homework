@@ -28,7 +28,7 @@ router.get("/", getAllProductsController)
 
 
 /**
- * @route DELETE /api/products/:id
+ * @route DELETE /api/products/delete/:id
  * @description delete all products need user id ifrom the req.params
  * @access Private
  */
