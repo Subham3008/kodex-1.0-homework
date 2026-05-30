@@ -95,7 +95,7 @@ const loginService = async ({ email, password }) => {
   if (!isCompared) {
     throw new ApiError(401, "Password not matched, unauthorized access.")
   }
- 
+
 
   //--------generate tokens----->>
   let accessTK = await generateAccessToken(isExisted._id)

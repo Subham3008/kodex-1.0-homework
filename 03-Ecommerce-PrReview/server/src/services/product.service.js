@@ -1,3 +1,4 @@
+const storageInstance = require("../config/imagekit");
 const productModel = require("../models/product.model");
 const ApiError = require("../utils/apiError");
 const uploadToImagekit = require("../utils/imagekit.helper");
@@ -38,15 +39,14 @@ const createProductService = async (req) => {
     for (const file of req.files) {
 
       //----upload to imagekit---->>
-      const uploadedImage =
-        await uploadToImagekit(
-          file,
-          file.originalname,
-          "/products"
-        );
+      const uploadedImage = await uploadToImagekit(
+        file,
+        file.originalname,
+        "/products"
+      );
 
       //----store only image url---->>
-      uploadedImages.push(uploadedImage.url);
+      uploadedImages.push({ url: uploadedImage.url, fileId: uploadedImage.fileId });
     }
 
   }
@@ -109,6 +109,16 @@ const deleteProductService = async (req) => {
 
   //--------delete product-------->>
 
+  //--------delete images from imagekit-------->>
+  if (product.images && product.images.length > 0) {
+    for (const image of product.images) {
+      if (image.fileId) {
+        await storageInstance.deleteFile(image.fileId)
+      }
+    }
+  }
+
+  //--------delete images from database-------->>
   await product.deleteOne();
 
 }
@@ -220,7 +230,10 @@ const updateProductService = async (req) => {
         );
 
       uploadedImages.push(
-        uploadedImage.url
+        {
+          url: uploadedImage.url,
+          fileId: uploadedImage.fileId
+        }
       );
     }
   }
